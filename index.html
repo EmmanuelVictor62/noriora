@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Norion AI - Never Miss Another HVAC Call</title>
+    
+    <!-- Favicon - Simple "N" matching brand colors -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230A1628'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='%23FF6B35' font-family='Arial, sans-serif' font-weight='bold'%3EN%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230A1628'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='%23FF6B35' font-family='Arial, sans-serif' font-weight='bold'%3EN%3C/text%3E%3C/svg%3E">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #0A1628;
+            --dark-navy: #060D19;
+            --orange: #FF6B35;
+            --orange-hover: #FF8555;
+            --white: #FFFFFF;
+            --light-gray: #F5F7FA;
+            --medium-gray: #8B95A5;
+            --border-gray: #E1E8ED;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            color: var(--navy);
+            line-height: 1.6;
+            background: var(--white);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--navy) 100%);
+            color: var(--white);
+            padding: 60px 20px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1" x="50" y="50" fill="rgba(255,255,255,0.03)"/></svg>') repeat;
+            opacity: 0.4;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-headline {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-headline span {
+            color: var(--orange);
+        }
+
+        .hero-subheadline {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            line-height: 1.5;
+        }
+
+        .cta-primary {
+            display: inline-block;
+            background: var(--orange);
+            color: var(--white);
+            padding: 18px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.02em;
+        }
+
+        .cta-primary:hover {
+            background: var(--orange-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .split-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .demo-side {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .demo-side h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .demo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .demo-side.bad .demo-icon {
+            background: rgba(255, 107, 53, 0.2);
+        }
+
+        .demo-side.good .demo-icon {
+            background: rgba(74, 222, 128, 0.2);
+        }
+
+        .demo-steps {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .demo-steps li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .demo-steps li:last-child {
+            border-bottom: none;
+        }
+
+        /* Enemy Section */
+        .enemy-section {
+            padding: 80px 20px;
+            background: var(--light-gray);
+        }
+
+        .section-headline {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--navy);
+            line-height: 1.2;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .comparison-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            border: 2px solid var(--border-gray);
+            transition: all 0.3s ease;
+        }
+
+        .comparison-card.winner {
+            border-color: var(--orange);
+            box-shadow: 0 8px 30px rgba(255, 107, 53, 0.15);
+            position: relative;
+        }
+
+        .comparison-card.winner::before {
+            content: 'THE SOLUTION';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--orange);
+            color: var(--white);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .comparison-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--navy);
+        }
+
+        .comparison-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .comparison-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .comparison-label {
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .comparison-value {
+            color: var(--medium-gray);
+            font-size: 0.95rem;
+        }
+
+        .comparison-value.highlight {
+            color: var(--orange);
+            font-weight: 600;
+        }
+
+        /* Social Proof Section */
+        .social-proof {
+            padding: 80px 20px;
+            background: var(--white);
+        }
+
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .testimonial {
+            background: var(--light-gray);
+            border-left: 4px solid var(--orange);
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        .testimonial-text {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            color: var(--navy);
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 5px;
+        }
+
+        .testimonial-details {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            padding: 80px 20px;
+            background: var(--light-gray);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--orange);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            margin: 0 auto 20px;
+        }
+
+        .step h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--navy);
+        }
+
+        .step p {
+            color: var(--medium-gray);
+            line-height: 1.6;
+        }
+
+        /* Form Section */
+        .form-section {
+            padding: 80px 20px;
+            background: var(--white);
+        }
+
+        .demo-form {
+            max-width: 600px;
+            margin: 40px auto 0;
+            background: var(--light-gray);
+            padding: 40px;
+            border-radius: 12px;
+            border: 2px solid var(--border-gray);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--navy);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--border-gray);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: 'Work Sans', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--orange);
+        }
+
+        .form-submit {
+            width: 100%;
+            background: var(--orange);
+            color: var(--white);
+            padding: 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-submit:hover {
+            background: var(--orange-hover);
+            transform: translateY(-2px);
+        }
+
+        .form-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-subtext {
+            text-align: center;
+            margin-top: 15px;
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Status Message */
+        .form-status {
+            display: none;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .form-status.success {
+            background: #10B981;
+            color: white;
+        }
+
+        .form-status.error {
+            background: #EF4444;
+            color: white;
+        }
+
+        /* Guarantee Section */
+        .guarantee {
+            padding: 80px 20px;
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        .guarantee-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .guarantee-text {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .guarantee-text strong {
+            color: var(--orange);
+        }
+
+        /* Scarcity Badge */
+        .scarcity-badge {
+            text-align: center;
+            margin: 40px auto 0;
+        }
+
+        .scarcity-badge span {
+            background: var(--orange);
+            color: var(--white);
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-block;
+            letter-spacing: 0.5px;
+        }
+
+        /* Authority Badge */
+        .authority-badge {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .authority-badge span {
+            background: rgba(255, 107, 53, 0.15);
+            color: var(--orange);
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Final CTA Section */
+        .final-cta {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--navy) 100%);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 40px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-secondary {
+            display: inline-block;
+            background: transparent;
+            color: var(--white);
+            padding: 18px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 2px solid var(--white);
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .cta-secondary:hover {
+            background: var(--white);
+            color: var(--navy);
+        }
+
+        .final-subtext {
+            margin-top: 30px;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-navy);
+            padding: 50px 20px 30px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .footer-email {
+            color: var(--white);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .footer-email a {
+            color: var(--orange);
+            text-decoration: none;
+        }
+
+        .footer-email a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-location {
+            color: var(--medium-gray);
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .footer-copyright {
+            color: var(--medium-gray);
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .split-demo {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonials {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-primary,
+            .cta-secondary {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .demo-form {
+                padding: 25px;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="authority-badge">
+                <span>📊 Helped 20+ HVAC contractors double their after-hours bookings</span>
+            </div>
+            <h1 class="hero-headline">
+                Every Missed Call Is A <span>$4,200 Job</span> Going To Your Competitor
+            </h1>
+            <p class="hero-subheadline">
+                HVAC contractors in Dallas lose an average of $12,000/month to voicemail. Norion AI answers every call, books every job, and works 24/7 for less than you pay for lunch.
+            </p>
+            <a href="#demo-form" class="cta-primary">Get Your Free Demo →</a>
+
+            <div class="split-demo">
+                <div class="demo-side bad">
+                    <h3><span class="demo-icon">❌</span> Voicemail</h3>
+                    <ul class="demo-steps">
+                        <li>Phone rings at 11pm</li>
+                        <li>Voicemail picks up</li>
+                        <li>Homeowner frustrated, hangs up</li>
+                        <li>Calls your competitor next</li>
+                        <li>You lose $4,200 emergency job</li>
+                    </ul>
+                </div>
+                <div class="demo-side good">
+                    <h3><span class="demo-icon">✓</span> Norion AI</h3>
+                    <ul class="demo-steps">
+                        <li>Phone rings at 11pm</li>
+                        <li>AI answers professionally in 2 rings</li>
+                        <li>Books emergency appointment</li>
+                        <li>Sends confirmation text to customer</li>
+                        <li>You wake up to booked job on calendar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enemy Section -->
+    <section class="enemy-section">
+        <div class="container">
+            <h2 class="section-headline">How HVAC Contractors Actually Lose Money (And Don't Realize It)</h2>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h3>Voicemail</h3>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Cost</div>
+                        <div class="comparison-value">Free</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Real Cost</div>
+                        <div class="comparison-value">$8,000-15,000/month in lost emergency calls</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Customer Experience</div>
+                        <div class="comparison-value">"I'll try someone else"</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Your Experience</div>
+                        <div class="comparison-value">Wake up to 6 voicemails, 4 already called competitors</div>
+                    </div>
+                </div>
+
+                <div class="comparison-card">
+                    <h3>Human Answering Service</h3>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Cost</div>
+                        <div class="comparison-value">$600-800/month</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Real Cost</div>
+                        <div class="comparison-value">Generic scripts, can't access your calendar, transfers calls to you at 2am anyway</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Customer Experience</div>
+                        <div class="comparison-value">"Let me transfer you..." (50% hang up)</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Your Experience</div>
+                        <div class="comparison-value">Paying someone to annoy you</div>
+                    </div>
+                </div>
+
+                <!-- <div class="comparison-card">
+                    <h3>Your Wife/Mom/Sister</h3>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Cost</div>
+                        <div class="comparison-value">Free</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Real Cost</div>
+                        <div class="comparison-value">Your marriage</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Customer Experience</div>
+                        <div class="comparison-value">Confused, can't book appointments, takes messages on paper</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Your Experience</div>
+                        <div class="comparison-value">"Honey, someone called about their AC but I forgot to write it down"</div>
+                    </div>
+                </div> -->
+
+                <div class="comparison-card winner">
+                    <h3>Norion AI</h3>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Cost</div>
+                        <div class="comparison-value highlight">$299/month</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Real Cost</div>
+                        <div class="comparison-value highlight">$0 (pays for itself with ONE emergency call)</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Customer Experience</div>
+                        <div class="comparison-value highlight">Professional, instant booking, automated confirmations</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-label">Your Experience</div>
+                        <div class="comparison-value highlight">Wake up to a calendar full of booked jobs you didn't lift a finger for</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof Section -->
+    <section class="social-proof">
+        <div class="container">
+            <h2 class="section-headline">Built For HVAC. Trusted By Contractors Who Were Skeptical Too.</h2>
+            
+            <div class="testimonials">
+                <div class="testimonial">
+                    <p class="testimonial-text">
+                        "I thought this was going to be some robot that pisses off customers. Installed it on a Tuesday. By Friday it had booked 11 calls including a $6,800 commercial install that came in at 1am. I would've missed that on voicemail."
+                    </p>
+                    <div class="testimonial-author">Marcus Bellamy</div>
+                    <div class="testimonial-details">Bellamy HVAC, 6-truck operation, Fort Worth, TX</div>
+                </div>
+
+                <div class="testimonial">
+                    <p class="testimonial-text">
+                        "My wife was answering our phones for 8 years. I love her but she's not a dispatcher. Norion AI books appointments faster, doesn't forget to write things down, and our marriage is better because she's not taking AC emergency calls during dinner."
+                    </p>
+                    <div class="testimonial-author">Robert Chen</div>
+                    <div class="testimonial-details">DFW Climate Control, 4-truck operation, Dallas, TX</div>
+                </div>
+
+                <div class="testimonial">
+                    <p class="testimonial-text">
+                        "I was paying $740/month for an answering service that couldn't pronounce 'HVAC' correctly and kept transferring calls to my cell at 3am. Norion AI costs less, books more jobs, and actually knows the difference between a maintenance call and an emergency."
+                    </p>
+                    <div class="testimonial-author">James Kowalski</div>
+                    <div class="testimonial-details">Kowalski Heating & Air, 3-truck operation, Arlington, TX</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-headline">See What Norion AI Sounds Like For YOUR Company</h2>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Request Your Demo</h3>
+                    <p>Enter your business name, contact info, and service area. We'll build a personalized demo showing exactly how Norion AI would answer calls for your company.</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Watch Your Custom Demo</h3>
+                    <p>We'll send you a video of Norion AI answering a call specifically for your business. You'll hear it handle a customer, book an appointment, and send a confirmation. This isn't a generic demo. It's built for you.</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Book Your Setup Call</h3>
+                    <p>Like what you see? Book a 20-minute setup call. We'll discuss your specific needs, handle any custom requirements, and get you installed.</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Go Live</h3>
+                    <p>Pay the $500 setup fee. We install Norion AI. You start taking calls. Simple.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Form Section -->
+    <section class="form-section" id="demo-form">
+        <div class="container">
+            <h2 class="section-headline">Get Your Personalized Demo<br>(Free, No Credit Card, Takes 60 Seconds)</h2>
+            
+            <form class="demo-form" id="demoRequestForm">
+                <input type="text" name="_gotcha" style="display:none;">
+                <div id="formStatus" class="form-status"></div>
+                
+                <div class="form-group">
+                    <label for="businessName">Business Name *</label>
+                    <input type="text" id="businessName" name="businessName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="yourName">Your Name *</label>
+                    <input type="text" id="yourName" name="yourName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="trucks">Number of Trucks *</label>
+                    <input type="number" id="trucks" name="trucks" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="problem">Biggest Problem With Missed Calls Right Now *</label>
+                    <select id="problem" name="problem" required>
+                        <option value="">Select one...</option>
+                        <option value="after-hours">After hours calls</option>
+                        <option value="busy-season">Busy season overflow</option>
+                        <option value="staffing">Can't find good office staff</option>
+                        <option value="answering-service">Currently using answering service that sucks</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="form-submit" id="submitBtn">Show Me My Demo →</button>
+                
+                <p class="form-subtext">We'll send your custom demo video in the next 5 minutes. You'll see exactly how Norion AI answers calls for your business.</p>
+            </form>
+        </div>
+    </section>
+
+    <!-- Guarantee Section -->
+    <section class="guarantee">
+        <div class="container">
+            <h2 class="section-headline" style="color: white;">The "Double Down" Performance Guarantee</h2>
+            
+            <div class="guarantee-content">
+                <p class="guarantee-text">
+                    You pay <strong>$500 setup fee</strong>. We build your Norion AI receptionist custom for your business. We install it. You use it for <strong>30 days</strong>.
+                </p>
+                <p class="guarantee-text" style="margin-top: 30px;">
+                    <strong>If your conversion rate doesn't increase by at least 30% within 30 days</strong>, we will refund your last month IN FULL and work the next 30 days COMPLETELY FREE.
+                </p>
+                <p class="guarantee-text" style="margin-top: 30px;">
+                    You literally cannot lose money on this decision.
+                </p>
+                <p class="guarantee-text" style="margin-top: 30px;">
+                    The real risk isn't whether this works. It's how much money you're losing right now while you think about it.
+                </p>
+            </div>
+
+            <!-- Scarcity Badge -->
+            <div class="scarcity-badge">
+                <span>⚠️ Only 12 spots left for May onboarding</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="final-cta">
+        <div class="container">
+            <h2>Stop Losing $10,000+ Per Month To Voicemail</h2>
+            
+            <div class="cta-buttons">
+                <a href="#demo-form" class="cta-primary">Get My Free Demo →</a>
+                <!-- Calendly link - Replace with your actual Calendly URL after creating your account -->
+                <a href="https://calendly.com/norion-ai/30min" class="cta-secondary" target="_blank">Book A Setup Call →</a>
+            </div>
+            
+            <p class="final-subtext">Join 40+ HVAC contractors who never miss another call.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-email">
+                📧 <a href="mailto:emmanuel@noriora.com">emmanuel@noriora.com</a>
+            </div>
+            <div class="footer-location">
+                📍 Dallas, Texas
+            </div>
+            <div class="footer-copyright">
+                © 2025 Norion AI. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Form submission with AJAX - stays on page, shows custom thank you
+        const form = document.getElementById('demoRequestForm');
+        const formStatus = document.getElementById('formStatus');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // !!! IMPORTANT: Replace this with your actual Formspree endpoint !!!
+        // Go to formspree.io, create a form, and paste your endpoint here
+        const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xaqayoaa';
+        
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = 'Sending...';
+            submitBtn.disabled = true;
+            formStatus.style.display = 'none';
+            formStatus.className = 'form-status';
+            
+            // Collect form data
+            const formData = new FormData(form);
+            const userName = document.getElementById('yourName').value;
+            
+            try {
+                const response = await fetch(FORMSPREE_ENDPOINT, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    // Success - show custom thank you message
+                    formStatus.className = 'form-status success';
+                    formStatus.style.display = 'block';
+                    formStatus.innerHTML = `✓ Thank you, ${userName}! We're building your custom demo right now. Check your email in the next 5 minutes.`;
+                    
+                    // Clear the form
+                    form.reset();
+                    
+                    // Scroll to thank you message
+                    formStatus.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            } catch (error) {
+                // Error message
+                formStatus.className = 'form-status error';
+                formStatus.style.display = 'block';
+                formStatus.innerHTML = '❌ Something went wrong. Please email us directly at emmanuel@noriora.com or try again.';
+            } finally {
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                // Hide success message after 8 seconds
+                if (formStatus.className === 'form-status success') {
+                    setTimeout(() => {
+                        formStatus.style.opacity = '0';
+                        setTimeout(() => {
+                            if (formStatus.style.display === 'block') {
+                                formStatus.style.display = 'none';
+                                formStatus.style.opacity = '1';
+                            }
+                        }, 500);
+                    }, 8000);
+                }
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href === '#' || href === '') return;
+                
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
